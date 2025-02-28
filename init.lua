@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -139,7 +139,7 @@ vim.opt.timeoutlen = 300
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
-vim.opt.splitbelow = true
+vim.opt.splitbelow = false
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
@@ -165,6 +165,43 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+-- Neovide line test                                                                                                                                    |
+-- Not really a configuration option, but g:neovide only exists and is set to v:true if this
+-- Neovim is in Neovide. Useful for configuring things only for Neovide in your init.vim/init.lua:
+if vim.g.neovide then
+    -- Put anything you want to happen only in Neovide here
+    vim.print(vim.g.neovide_version)
+    vim.g.neovide_refresh_rate_idle = 5
+    vim.g.neovide_position_animation_length = 0.2
+    --    vim.g.neovide_cursor_antialiasing = false
+-- Setting g:neovide_cursor_animation_length determines 
+-- the time it takes for the cursor to complete it's animation in seconds. 
+-- Set to 0 to disable.
+    vim.g.neovide_cursor_animation_length = 0.2
+-- Sets the velocity rotation speed of particles. The higher, the less particles actually move and look more "nervous", the lower, the more it looks like a collapsing sine wave.
+    vim.g.neovide_cursor_vfx_particle_curl = 0.2
+-- Sets the mass movement of particles, or how individual each one acts. The higher the value, the less particles rotate in accordance to each other, the lower, the more line-wise all particles become.
+    vim.g.neovide_cursor_vfx_particle_phase = 5.0
+    vim.g.neovide_cursor_vfx_mode = 'railgun'
+    vim.g.neovide_cursor_smooth_blink = true
+    vim.opt.guicursor = { 'a:blinkwait500-blinkon500-blinkoff500', 'a:ver25' }
+    vim.g.neovide_cursor_trail_size = 0.28
+--    vim.g.neovide_text_gamma = 0.8
+--    vim.g.neovide_text_contrast = 0.1
+    vim.g.neovide_profile = true
+end
+
+vim.opt.guicursor = { 'a:blinkwait500-blinkon500-blinkoff500', 'a:ver10' }
+
+vim.g.python3_host_prog = '/usr/local/bin/python3'
+--if vim.fn.executable("python3") > 0 then
+--  vim.g.python3_host_prog = system("which python3")
+--end
+-- Setting the font and size
+vim.o.guifont = 'AnonymicePro Nerd Font Mono:h20'
+
+-- vim.opt.tuicursor = { 'a:blinkwait500-blinkon500-blinkoff500', 'a:ver25' }
+-- vim.opt.guicursor = 'a:blinkwait500-blinkon500-blinkoff500-Cursor/lCursor'
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -722,7 +759,7 @@ require('lazy').setup({
 
     { -- Autoformat
         'stevearc/conform.nvim',
-        event = { 'BufWritePre' },
+        event = { 'BufWritePre', "BufReadPre", "BufNewFile"},
         cmd = { 'ConformInfo' },
         keys = {
             {
@@ -735,12 +772,12 @@ require('lazy').setup({
             },
         },
         opts = {
-            notify_on_error = false,
+            notify_on_error = true,
             format_on_save = function(bufnr)
                 -- Disable "format_on_save lsp_fallback" for languages that don't
                 -- have a well standardized coding style. You can add additional
                 -- languages here or re-enable it for the disabled ones.
-                local disable_filetypes = { c = true, cpp = true }
+                 local disable_filetypes = { c = true, cpp = false }
                 local lsp_format_opt
                 if disable_filetypes[vim.bo[bufnr].filetype] then
                     lsp_format_opt = 'never'
@@ -754,8 +791,19 @@ require('lazy').setup({
             end,
             formatters_by_ft = {
                 lua = { 'stylua' },
+javascript = { "prettier" },
+        typescript = { "prettier" },
+        javascriptreact = { "prettier" },
+        typescriptreact = { "prettier" },
+        svelte = { "prettier" },
+        css = { "prettier" },
+        html = { "prettier" },
+        json = { "prettier" },
+        yaml = { "prettier" },
+        markdown = { "prettier" },
+        graphql = { "prettier" },
                 -- Conform can also run multiple formatters sequentially
-                -- python = { "isort", "black" },
+              python = { "isort", "black" },
                 --
                 -- You can use 'stop_after_first' to run the first available formatter from the list
                 -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -765,8 +813,7 @@ require('lazy').setup({
 
     { -- Autocompletion
         'hrsh7th/nvim-cmp',
-        event = 'InsertEnter',
-        dependencies = {
+        event = 'InsertEnter', dependencies = {
             -- Snippet Engine & its associated nvim-cmp source
             {
                 'L3MON4D3/LuaSnip',
@@ -950,7 +997,7 @@ require('lazy').setup({
         main = 'nvim-treesitter.configs', -- Sets main module to use for opts
         -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
         opts = {
-            ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+            ensure_installed = { 'bash', 'c', 'diff', 'dockerfile', 'yaml', 'graphql', 'gitignore','html', 'jsonc', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
             -- Autoinstall languages that are not installed
             auto_install = true,
             highlight = {

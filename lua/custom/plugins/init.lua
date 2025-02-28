@@ -4,10 +4,6 @@
 -- See the kickstart.nvim README for more information
 return {
     {
-        'https://codeberg.org/esensar/nvim-dev-container',
-        dependencies = 'nvim-treesitter/nvim-treesitter',
-    },
-    {
         'yetone/avante.nvim',
         event = 'VeryLazy',
         opts = {

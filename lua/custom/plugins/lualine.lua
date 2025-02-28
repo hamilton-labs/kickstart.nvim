@@ -3,19 +3,12 @@ return {
     -- Bufferline
     {
         'akinsho/bufferline.nvim',
-        dependencies = 'nvim-tree/nvim-web-devicons',
     },
 
     -- Colorscheme
     {
         'folke/tokyonight.nvim',
         options = { colorshcheme = 'tokyonight' },
-    },
-
-    -- Lualine (THE NEW EXTENSION ADDED IN CONFIGURATION)
-    {
-        'nvim-lualine/lualine.nvim',
-        dependencies = { 'nvim-tree/nvim-web-devicons' },
     },
 
     -- Which-key
@@ -25,9 +18,9 @@ return {
     },
 
     -- add gruvbox
-    {
-        'ellisonleao/gruvbox.nvim',
-    },
+    -- {
+    --     'ellisonleao/gruvbox.nvim',
+    -- },
 
     -- Configure LazyVim to load gruvbox
     -- {
@@ -46,11 +39,9 @@ return {
 
     --
     {
-
         -- Lualine (THE NEW EXTENSION ADDED IN CONFIGURATION)
         'nvim-lualine/lualine.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
-
         config = function()
             require('lualine').setup {
                 options = {
@@ -64,7 +55,8 @@ return {
                     },
                     ignore_focus = {},
                     always_divide_middle = true,
-                    globalstatus = true,
+                    always_show_tabline = true,
+                    globalstatus = false,
                     refresh = {
                         statusline = 1000,
                         tabline = 1000,
@@ -87,8 +79,28 @@ return {
                     lualine_y = {},
                     lualine_z = {},
                 },
-                tabline = {},
-                winbar = {},
+                tabline = {
+                    lualine_a = { 'hostname' },
+                    lualine_b = { 'tabs' },
+                    lualine_c = { 'filename' },
+                    lualine_x = {},
+                    lualine_y = {},
+                    lualine_z = { 'buffers' },
+                },
+                winbar = {
+                    lualine_a = { 'filesize' },
+                    lualine_b = { 'filetype' },
+                    lualine_c = {},
+                    lualine_x = {},
+                    lualine_y = {},
+                    lualine_z = {
+                        {
+                            'datetime',
+                            -- options: default, us, uk, iso, or your own format string ("%H:%M", etc..)
+                            style = 'default',
+                        },
+                    },
+                },
                 inactive_winbar = {},
                 extensions = {},
             }
